@@ -1,0 +1,24 @@
+[project]
+name = "tech-challenge-1"
+version = "0.1.0"
+description = "tech_challenge_1"
+authors = [
+    {name = "Alice Beatriz da Silva"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "requests (>=2.32.5,<3.0.0)",
+    "numpy (>=2.3.3,<3.0.0)",
+    "pandas (>=2.3.3,<3.0.0)",
+    "black (>=25.9.0,<26.0.0)",
+    "pydantic (>=2.11.10,<3.0.0)",
+    "flask (>=3.1.2,<4.0.0)",
+    "flask-sqlalchemy (>=3.1.1,<4.0.0)",
+    "flasgger (>=0.9.7.1,<0.10.0.0)"
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
