@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from .routes import router
-from .config import Config
+from tech_challenge.api.routes import router
+from tech_challenge.api.config import Config
 
 app = FastAPI(
     title=Config.SWAGGER_TITLE,
