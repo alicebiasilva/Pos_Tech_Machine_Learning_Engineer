@@ -1,138 +1,179 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Livros - API</title>
-  <style>
-    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background-color: #f2f2f2; }
-    input { width: 90%; }
-    button { margin-right: 10px; margin-top: 10px; padding: 8px; cursor: pointer; }
-    #log { margin-top: 20px; white-space: pre-wrap; background: #f7f7f7; padding: 10px; border: 1px solid #ddd; max-height: 300px; overflow: auto; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Consulta de dados</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        h2 {
+            color: #34495e;
+        }
+
+        .subtitle, .update {
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background-color: white;
+        }
+
+        table th, table td {
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #2980b9;
+            color: white;
+        }
+
+        .routes, .contact, .links {
+            margin-top: 30px;
+        }
+
+        .routes ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .routes li {
+            margin-bottom: 10px;
+        }
+
+        .links a {
+            display: inline-block;
+            margin-right: 15px;
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .links a:hover {
+            background-color: #2980b9;
+        }
+
+        .contact {
+            margin-top: 40px;
+            font-size: 14px;
+        }
+    </style>
 </head>
 <body>
 
-<h1>Consulta de livros - API</h1>
+    <h1>Consulta de dados</h1>
+    <p class="subtitle">
+        Este site tem como objetivo disponibilizar os dados de 
+        <a href="https://books.toscrape.com/" target="_blank">https://books.toscrape.com/</a> 
+        através de APIs, tornando a leitura acessível e confiável.
+    </p>
+    <p class="update"><strong>Última atualização:</strong> 11/10/2025</p>
 
-<!-- Botões de rotas -->
-<div>
-  <button onclick="fetchAllBooks()">Rota /books</button>
-  <button onclick="fetchBookById()">Rota books/{book_id}</button>
-  <button onclick="searchBooks()">Rota /books/search</button>
-  <button onclick="fetchCategories()">Rota /categories</button>
-  <button onclick="checkHealth()">Rota /health</button>
-  <button onclick="openDocs()">Documentação</button>
-</div>
+    <h2>Amostra dos dados disponíveis</h2>
 
-<!-- Tabela de livros -->
-<table id="livros-table">
-  <thead>
-    <tr>
-      <th>ID <br><input type="text" id="filter-id" placeholder="Filtrar ID"></th>
-      <th>Título <br><input type="text" id="filter-title" placeholder="Filtrar título"></th>
-      <th>Autor <br><input type="text" id="filter-author" placeholder="Filtrar autor"></th>
-      <th>Ano <br><input type="text" id="filter-year" placeholder="Filtrar ano"></th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Título</th>
+                <th>Preço</th>
+                <th>Disponibilidade</th>
+                <th>Avaliação</th>
+                <th>Categoria</th>
+                <th>Caminho da Imagem</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>0</td>
+                <td>It's Only the Himalayas</td>
+                <td>£45.17</td>
+                <td>In stock</td>
+                <td>Two</td>
+                <td>Travel</td>
+                <td>tech_challenge/data/images\27a53d0bb95bdd88288...</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>Full Moon over Noah’s Ark</td>
+                <td>£49.43</td>
+                <td>In stock</td>
+                <td>Four</td>
+                <td>Travel</td>
+                <td>tech_challenge/data/images\57770cac1628f440763...</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>See America</td>
+                <td>£48.87</td>
+                <td>In stock</td>
+                <td>Three</td>
+                <td>Travel</td>
+                <td>tech_challenge/data/images\9a7e63f12829df4b43b...</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Vagabonding</td>
+                <td>£36.94</td>
+                <td>In stock</td>
+                <td>Two</td>
+                <td>Travel</td>
+                <td>tech_challenge/data/images\d5bf0090470b0b8ea46...</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>Under the Tuscan Sun</td>
+                <td>£37.33</td>
+                <td>In stock</td>
+                <td>Three</td>
+                <td>Travel</td>
+                <td>tech_challenge/data/images\98c2e95c5fd1a4e7cd5...</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>A Summer In Europe</td>
+                <td>£44.34</td>
+                <td>In stock</td>
+                <td>Two</td>
+                <td>Travel</td>
+                <td>tech_challenge/data/images\4e15150388702ebca2c...</td>
+            </tr>
+        </tbody>
+    </table>
 
-<!-- Área de log -->
-<div id="log"></div>
+    <div class="routes">
+        <h2>Acesse as rotas abaixo de acordo com as informações de seu interesse:</h2>
+        <ul>
+            <li>📚 Lista de todos os livros disponíveis (somente nome): <a href="https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books" target="_blank">/api/v1/books</a></li>
+            <li>🔍 Detalhes de um livro por ID: <code>/api/v1/books/{book_id}</code></li>
+            <li>🔎 Busca de livros por título e categoria: <a href="https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books/search" target="_blank">/api/v1/books/search</a></li>
+            <li>📂 Lista todas as categorias disponíveis: <a href="https://pos-tech-machine-learning-engineer.vercel.app/api/v1/categories_html" target="_blank">/api/v1/categories_html</a></li>
+        </ul>
+    </div>
 
-<script>
-  const apiBase = "https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books";
-  let livros = [];
+    <div class="links">
+        <a href="https://pos-tech-machine-learning-engineer.vercel.app/docs" target="_blank">📘 Documentação da API</a>
+        <a href="https://pos-tech-machine-learning-engineer.vercel.app/api/v1/health" target="_blank">📊 Status da API</a>
+    </div>
 
-  // Função para buscar todos os livros da API
-  async function fetchAllBooksTable() {
-    try {
-      const response = await fetch(apiBase);
-      if (!response.ok) throw new Error('Erro ao buscar dados');
-      livros = await response.json();
-      renderTable(livros);
-    } catch (error) {
-      console.error('Erro:', error);
-    }
-  }
-
-  // Função para renderizar os dados na tabela
-  function renderTable(data) {
-    const tbody = document.querySelector('#livros-table tbody');
-    tbody.innerHTML = '';
-    data.forEach(livro => {
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${livro.id || ''}</td>
-        <td>${livro.title || ''}</td>
-        <td>${livro.author || ''}</td>
-        <td>${livro.year || ''}</td>
-      `;
-      tbody.appendChild(row);
-    });
-  }
-
-  // Função para aplicar os filtros
-  function applyFilters() {
-    const filterId = document.getElementById("filter-id").value.toLowerCase();
-    const filterTitle = document.getElementById("filter-title").value.toLowerCase();
-    const filterAuthor = document.getElementById("filter-author").value.toLowerCase();
-    const filterYear = document.getElementById("filter-year").value.toLowerCase();
-
-    const filtered = livros.filter(l =>
-      (l.id?.toString() || "").includes(filterId) &&
-      (l.title?.toLowerCase() || "").includes(filterTitle) &&
-      (l.author?.toLowerCase() || "").includes(filterAuthor) &&
-      (l.year?.toString() || "").includes(filterYear)
-    );
-    renderTable(filtered);
-  }
-
-  // Event listeners para os filtros
-  document.getElementById("filter-id").addEventListener("input", applyFilters);
-  document.getElementById("filter-title").addEventListener("input", applyFilters);
-  document.getElementById("filter-author").addEventListener("input", applyFilters);
-  document.getElementById("filter-year").addEventListener("input", applyFilters);
-
-  // Chama a função para carregar os dados ao iniciar
-  window.onload = fetchAllBooksTable;
-
-// Função para log
-function logMessage(msg) {
-  document.getElementById("log").textContent = msg;
-}
-
-// Funções para as rotas
-function fetchAllBooks() {
-  window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books`, "_blank");
-}
-
-function fetchBookById() {
-    window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books/{book_id}`, "_blank");
-}
-
-function searchBooks() {
-    window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books/search`, "_blank"); 
-}
-
-function fetchCategories() {
-    window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/categories`, "_blank"); 
-}
-
-function checkHealth() {
-    window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/health`, "_blank"); 
-}
-
-// Abrir documentação FastAPI
-function openDocs() {
-  window.open(`https://pos-tech-machine-learning-engineer.vercel.app/docs`, "_blank");
-}
-
-// Carrega todos os livros ao iniciar
-fetchAllBooksTable();
-</script>
+    <div class="contact">
+        <p>📩 Em caso de dúvidas, entre em contato com: <a href="mailto:alicebiasilva24@gmail.com">alicebiasilva24@gmail.com</a></p>
+    </div>
 
 </body>
 </html>
