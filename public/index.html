@@ -1,100 +1,159 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <title>Consulta de Livros</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        input, button { margin: 5px; padding: 5px; }
-        table { border-collapse: collapse; margin-top: 20px; width: 100%; }
-        th, td { border: 1px solid #ccc; padding: 8px; }
-        button { cursor: pointer; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Livros - API</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid rgb(56, 26, 26); padding: 8px; text-align: left; }
+    th { background-color: #f2f2f2; }
+    input { width: 90%; }
+    button { margin-right: 10px; margin-top: 10px; padding: 8px; }
+    #log { margin-top: 20px; white-space: pre-wrap; background: #f7f7f7; padding: 10px; border: 1px solid #ddd; max-height: 300px; overflow: auto; }
+  </style>
 </head>
 <body>
 
-<h1>Consulta de Livros</h1>
+<h1>Livros - API</h1>
 
-<label>ID:</label>
-<input type="number" id="bookId" placeholder="Digite o ID">
-<br>
+<!-- Botões de rotas -->
+<div>
+  <button onclick="fetchAllBooks()">Todos os livros</button>
+  <button onclick="fetchBookById()">Livro por ID</button>
+  <button onclick="searchBooks()">Buscar livros</button>
+  <button onclick="fetchCategories()">Categorias</button>
+  <button onclick="checkHealth()">Health</button>
+</div>
 
-<label>Título:</label>
-<input type="text" id="bookTitle" placeholder="Digite o título">
-<br>
-
-<label>Categoria:</label>
-<input type="text" id="bookCategory" placeholder="Digite a categoria">
-<br>
-
-<button onclick="searchBooks()">Buscar</button>
-<button onclick="openSwagger()">Ver Documentação (Swagger)</button>
-
-<table id="resultsTable">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Preço</th>
-            <th>Disponibilidade</th>
-            <th>Categoria</th>
-            <th>Avaliação</th>
-        </tr>
-    </thead>
-    <tbody></tbody>
+<!-- Tabela de livros -->
+<table id="livros-table">
+  <thead>
+    <tr>
+      <th>ID <br><input type="text" id="filter-id" placeholder="Filtrar ID"></th>
+      <th>Título <br><input type="text" id="filter-title" placeholder="Filtrar título"></th>
+      <th>Autor <br><input type="text" id="filter-author" placeholder="Filtrar autor"></th>
+      <th>Ano <br><input type="text" id="filter-year" placeholder="Filtrar ano"></th>
+    </tr>
+  </thead>
+  <tbody></tbody>
 </table>
 
+<!-- Área de log -->
+<div id="log"></div>
+
 <script>
-const API_URL = "https://pos-tech-machine-learning-engineer-6td7lp2ru.vercel.app/api/v1/";
+const apiBase = "https://pos-tech-machine-learning-engineer-6td7lp2ru.vercel.app/api/v1";
+let livros = [];
+
+// Renderiza tabela
+function renderTable(data) {
+  const tbody = document.querySelector("#livros-table tbody");
+  tbody.innerHTML = "";
+  data.forEach(l => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${l.id || ""}</td>
+      <td>${l.title || ""}</td>
+      <td>${l.author || ""}</td>
+      <td>${l.year || ""}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+// Filtros individuais
+function applyFilters() {
+  const filterId = document.getElementById("filter-id").value.toLowerCase();
+  const filterTitle = document.getElementById("filter-title").value.toLowerCase();
+  const filterAuthor = document.getElementById("filter-author").value.toLowerCase();
+  const filterYear = document.getElementById("filter-year").value.toLowerCase();
+
+  const filtered = livros.filter(l =>
+    (l.id?.toString() || "").includes(filterId) &&
+    (l.title?.toLowerCase() || "").includes(filterTitle) &&
+    (l.author?.toLowerCase() || "").includes(filterAuthor) &&
+    (l.year?.toString() || "").includes(filterYear)
+  );
+  renderTable(filtered);
+}
+
+// Event listeners de filtro
+document.getElementById("filter-id").addEventListener("input", applyFilters);
+document.getElementById("filter-title").addEventListener("input", applyFilters);
+document.getElementById("filter-author").addEventListener("input", applyFilters);
+document.getElementById("filter-year").addEventListener("input", applyFilters);
+
+// Função para log
+function logMessage(msg) {
+  document.getElementById("log").textContent = msg;
+}
+
+// Rotas
+async function fetchAllBooks() {
+  try {
+    const res = await fetch(`${apiBase}/books`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    livros = await res.json();
+    renderTable(livros);
+    logMessage("Todos os livros carregados!");
+  } catch (err) {
+    logMessage("Erro: " + err);
+  }
+}
+
+async function fetchBookById() {
+  const bookId = prompt("Digite o ID do livro:");
+  if (!bookId) return;
+  try {
+    const res = await fetch(`${apiBase}/books/${bookId}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const book = await res.json();
+    renderTable([book]); // Mostra apenas esse livro na tabela
+    logMessage(`Livro ID ${bookId} carregado!`);
+  } catch (err) {
+    logMessage("Erro: " + err);
+  }
+}
 
 async function searchBooks() {
-    const id = document.getElementById("bookId").value;
-    const title = document.getElementById("bookTitle").value;
-    const category = document.getElementById("bookCategory").value;
-
-    let url = `${API_URL}/books/search?`;
-    if (title) url += `title=${encodeURIComponent(title)}&`;
-    if (category) url += `category=${encodeURIComponent(category)}&`;
-
-    if (id) {
-        url = `${API_URL}/books/${id}`;
-    }
-
-    try {
-        const res = await fetch(url);
-        const data = await res.json();
-        displayResults(data);
-    } catch (err) {
-        alert("Erro ao buscar livros: " + err);
-    }
+  const query = prompt("Digite palavra-chave para buscar livros:");
+  if (!query) return;
+  try {
+    const res = await fetch(`${apiBase}/books/search?q=${encodeURIComponent(query)}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const results = await res.json();
+    livros = results;
+    renderTable(results);
+    logMessage(`${results.length} livro(s) encontrado(s)!`);
+  } catch (err) {
+    logMessage("Erro: " + err);
+  }
 }
 
-function displayResults(books) {
-    const tbody = document.querySelector("#resultsTable tbody");
-    tbody.innerHTML = "";
-
-    if (!Array.isArray(books)) {
-        books = [books];
-    }
-
-    books.forEach(book => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-            <td>${book.id ?? ""}</td>
-            <td>${book.title ?? ""}</td>
-            <td>${book.price ?? ""}</td>
-            <td>${book.availability ?? ""}</td>
-            <td>${book.category ?? ""}</td>
-            <td>${book.rating ?? ""}</td>
-        `;
-        tbody.appendChild(row);
-    });
+async function fetchCategories() {
+  try {
+    const res = await fetch(`${apiBase}/categories`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const categories = await res.json();
+    logMessage("Categorias:\n" + JSON.stringify(categories, null, 2));
+  } catch (err) {
+    logMessage("Erro: " + err);
+  }
 }
 
-function openSwagger() {
-    // Abre o Swagger da FastAPI em uma nova aba
-    window.open("https://pos-tech-machine-learning-engineer.vercel.app/docs", "_blank");
+async function checkHealth() {
+  try {
+    const res = await fetch(`${apiBase}/health`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const health = await res.json();
+    logMessage("Health check:\n" + JSON.stringify(health, null, 2));
+  } catch (err) {
+    logMessage("Erro: " + err);
+  }
 }
+
+// Carrega todos os livros ao iniciar
+fetchAllBooks();
 </script>
 
 </body>
