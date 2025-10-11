@@ -5,10 +5,10 @@
   <title>Livros - API</title>
   <style>
     table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-    th, td { border: 1px solid rgb(56, 26, 26); padding: 8px; text-align: left; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
     th { background-color: #f2f2f2; }
     input { width: 90%; }
-    button { margin-right: 10px; margin-top: 10px; padding: 8px; }
+    button { margin-right: 10px; margin-top: 10px; padding: 8px; cursor: pointer; }
     #log { margin-top: 20px; white-space: pre-wrap; background: #f7f7f7; padding: 10px; border: 1px solid #ddd; max-height: 300px; overflow: auto; }
   </style>
 </head>
@@ -23,6 +23,7 @@
   <button onclick="searchBooks()">Buscar livros</button>
   <button onclick="fetchCategories()">Categorias</button>
   <button onclick="checkHealth()">Health</button>
+  <button onclick="openDocs()">Documentação</button>
 </div>
 
 <!-- Tabela de livros -->
@@ -88,12 +89,13 @@ function logMessage(msg) {
   document.getElementById("log").textContent = msg;
 }
 
-// Rotas
+// Funções para as rotas
 async function fetchAllBooks() {
   try {
     const res = await fetch(`${apiBase}/books`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    livros = await res.json();
+    const data = await res.json();
+    livros = Array.isArray(data) ? data : data.books || [];
     renderTable(livros);
     logMessage("Todos os livros carregados!");
   } catch (err) {
@@ -108,7 +110,8 @@ async function fetchBookById() {
     const res = await fetch(`${apiBase}/books/${bookId}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const book = await res.json();
-    renderTable([book]); // Mostra apenas esse livro na tabela
+    livros = [book];
+    renderTable(livros);
     logMessage(`Livro ID ${bookId} carregado!`);
   } catch (err) {
     logMessage("Erro: " + err);
@@ -122,9 +125,9 @@ async function searchBooks() {
     const res = await fetch(`${apiBase}/books/search?q=${encodeURIComponent(query)}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const results = await res.json();
-    livros = results;
-    renderTable(results);
-    logMessage(`${results.length} livro(s) encontrado(s)!`);
+    livros = Array.isArray(results) ? results : [];
+    renderTable(livros);
+    logMessage(`${livros.length} livro(s) encontrado(s)!`);
   } catch (err) {
     logMessage("Erro: " + err);
   }
@@ -150,6 +153,11 @@ async function checkHealth() {
   } catch (err) {
     logMessage("Erro: " + err);
   }
+}
+
+// Abrir documentação FastAPI
+function openDocs() {
+  window.open(`${apiBase.replace("/api/v1","")}/docs`, "_blank");
 }
 
 // Carrega todos os livros ao iniciar
