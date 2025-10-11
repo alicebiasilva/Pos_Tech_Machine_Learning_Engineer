@@ -1,5 +1,3 @@
-# tech_challenge/api/config.py
-
 class Config:
     SECRET_KEY = "sua_chave_secreta"             # Para segurança geral
     CACHE_TYPE = "simple"                         # Se quiser usar cache

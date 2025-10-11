@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .routes import router
-from .config import Config  # <- import correto
+from .config import Config
 
 app = FastAPI(
     title=Config.SWAGGER_TITLE,
