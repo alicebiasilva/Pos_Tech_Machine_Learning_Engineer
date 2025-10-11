@@ -23,7 +23,7 @@
   <button onclick="searchBooks()">Rota /books/search</button>
   <button onclick="fetchCategories()">Rota /categories</button>
   <button onclick="checkHealth()">Rota /health</button>
-  <button onclick="openDocs()">Documentação /docs</button>
+  <button onclick="openDocs()">Documentação</button>
 </div>
 
 <!-- Tabela de livros -->
@@ -46,17 +46,30 @@
 const apiBase = "https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books";
 let livros = [];
 
-// Renderiza tabela
-function renderTable(data) {
-  const tbody = document.querySelector("#livros-table tbody");
-  tbody.innerHTML = "";
-  data.forEach(l => {
-    const row = document.createElement("tr");
+async function fetchAllBooksTable() {
+  try {
+    const response = await fetch('https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books');
+    if (!response.ok) {
+      throw new Error('Erro ao buscar dados');
+    }
+    livros = await response.json();
+    renderTable(livros);
+  } catch (error) {
+    console.error('Erro:', error);
+  }
+}
+
+function renderTable(livros) {
+  const tbody = document.querySelector('#livros-table tbody');
+  tbody.innerHTML = ''; // Limpa a tabela antes de adicionar os dados
+
+  livros.forEach(livro => {
+    const row = document.createElement('tr');
     row.innerHTML = `
-      <td>${l.id || ""}</td>
-      <td>${l.title || ""}</td>
-      <td>${l.author || ""}</td>
-      <td>${l.year || ""}</td>
+      <td>${livro.id}</td>
+      <td>${livro.title}</td>
+      <td>${livro.author}</td>
+      <td>${livro.year}</td>
     `;
     tbody.appendChild(row);
   });
@@ -116,7 +129,7 @@ function openDocs() {
 }
 
 // Carrega todos os livros ao iniciar
-fetchAllBooks();
+fetchAllBooksTable();
 </script>
 
 </body>
