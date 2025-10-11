@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Consulta de Livros</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        input, button { margin: 5px; padding: 5px; }
+        table { border-collapse: collapse; margin-top: 20px; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; }
+        button { cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<h1>Consulta de Livros</h1>
+
+<label>ID:</label>
+<input type="number" id="bookId" placeholder="Digite o ID">
+<br>
+
+<label>Título:</label>
+<input type="text" id="bookTitle" placeholder="Digite o título">
+<br>
+
+<label>Categoria:</label>
+<input type="text" id="bookCategory" placeholder="Digite a categoria">
+<br>
+
+<button onclick="searchBooks()">Buscar</button>
+<button onclick="openSwagger()">Ver Documentação (Swagger)</button>
+
+<table id="resultsTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Título</th>
+            <th>Preço</th>
+            <th>Disponibilidade</th>
+            <th>Categoria</th>
+            <th>Avaliação</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script>
+const API_URL = "https://seu-projeto.vercel.app/api/v1";
+
+async function searchBooks() {
+    const id = document.getElementById("bookId").value;
+    const title = document.getElementById("bookTitle").value;
+    const category = document.getElementById("bookCategory").value;
+
+    let url = `${API_URL}/books/search?`;
+    if (title) url += `title=${encodeURIComponent(title)}&`;
+    if (category) url += `category=${encodeURIComponent(category)}&`;
+
+    if (id) {
+        url = `${API_URL}/books/${id}`;
+    }
+
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        displayResults(data);
+    } catch (err) {
+        alert("Erro ao buscar livros: " + err);
+    }
+}
+
+function displayResults(books) {
+    const tbody = document.querySelector("#resultsTable tbody");
+    tbody.innerHTML = "";
+
+    if (!Array.isArray(books)) {
+        books = [books];
+    }
+
+    books.forEach(book => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${book.id ?? ""}</td>
+            <td>${book.title ?? ""}</td>
+            <td>${book.price ?? ""}</td>
+            <td>${book.availability ?? ""}</td>
+            <td>${book.category ?? ""}</td>
+            <td>${book.rating ?? ""}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+function openSwagger() {
+    // Abre o Swagger da FastAPI em uma nova aba
+    window.open("https://pos-tech-machine-learning-engineer-p7za-n01m9rgb6.vercel.app/docs", "_blank");
+}
+</script>
+
+</body>
+</html>
