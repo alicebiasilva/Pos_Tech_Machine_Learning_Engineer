@@ -12,4 +12,4 @@ app = FastAPI(
 app.include_router(router, prefix="/api/v1")
 
 # Monta a pasta 'frontend' como arquivos estáticos
-app.mount("/", StaticFiles(directory="public", html=True), name="frontend")
+app.mount("/", StaticFiles(directory="tech_challenge/public", html=True), name="frontend")
