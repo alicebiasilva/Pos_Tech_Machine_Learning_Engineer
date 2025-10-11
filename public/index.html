@@ -14,16 +14,16 @@
 </head>
 <body>
 
-<h1>Livros - API</h1>
+<h1>Consulta de livros - API</h1>
 
 <!-- Botões de rotas -->
 <div>
-  <button onclick="fetchAllBooks()">Todos os livros</button>
-  <button onclick="fetchBookById()">Livro por ID</button>
-  <button onclick="searchBooks()">Buscar livros</button>
-  <button onclick="fetchCategories()">Categorias</button>
-  <button onclick="checkHealth()">Health</button>
-  <button onclick="openDocs()">Documentação</button>
+  <button onclick="fetchAllBooks()">Rota /books</button>
+  <button onclick="fetchBookById()">Rota books/{book_id}</button>
+  <button onclick="searchBooks()">Rota /books/search</button>
+  <button onclick="fetchCategories()">Rota /categories</button>
+  <button onclick="checkHealth()">Rota /health</button>
+  <button onclick="openDocs()">Documentação /docs</button>
 </div>
 
 <!-- Tabela de livros -->
@@ -43,7 +43,7 @@
 <div id="log"></div>
 
 <script>
-const apiBase = "https://pos-tech-machine-learning-engineer-6td7lp2ru.vercel.app/api/v1";
+const apiBase = "https://pos-tech-machine-learning-engineer-6td7lp2ru.vercel.app/api/v1/books";
 let livros = [];
 
 // Renderiza tabela
@@ -90,69 +90,24 @@ function logMessage(msg) {
 }
 
 // Funções para as rotas
-async function fetchAllBooks() {
-  try {
-    const res = await fetch(`${apiBase}/books`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    livros = Array.isArray(data) ? data : data.books || [];
-    renderTable(livros);
-    logMessage("Todos os livros carregados!");
-  } catch (err) {
-    logMessage("Erro: " + err);
-  }
+function fetchAllBooks() {
+  window.open(`/api/v1/books/{book_id}`, "_blank");
 }
 
-async function fetchBookById() {
-  const bookId = prompt("Digite o ID do livro:");
-  if (!bookId) return;
-  try {
-    const res = await fetch(`${apiBase}/books/${bookId}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const book = await res.json();
-    livros = [book];
-    renderTable(livros);
-    logMessage(`Livro ID ${bookId} carregado!`);
-  } catch (err) {
-    logMessage("Erro: " + err);
-  }
+function fetchBookById() {
+    window.open(`/api/v1/books`, "_blank");
 }
 
-async function searchBooks() {
-  const query = prompt("Digite palavra-chave para buscar livros:");
-  if (!query) return;
-  try {
-    const res = await fetch(`${apiBase}/books/search?q=${encodeURIComponent(query)}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const results = await res.json();
-    livros = Array.isArray(results) ? results : [];
-    renderTable(livros);
-    logMessage(`${livros.length} livro(s) encontrado(s)!`);
-  } catch (err) {
-    logMessage("Erro: " + err);
-  }
+function searchBooks() {
+    window.open(`/api/v1/books/search`, "_blank"); 
 }
 
-async function fetchCategories() {
-  try {
-    const res = await fetch(`${apiBase}/categories`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const categories = await res.json();
-    logMessage("Categorias:\n" + JSON.stringify(categories, null, 2));
-  } catch (err) {
-    logMessage("Erro: " + err);
-  }
+function fetchCategories() {
+    window.open(`/api/v1/books/categories`, "_blank"); 
 }
 
-async function checkHealth() {
-  try {
-    const res = await fetch(`${apiBase}/health`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const health = await res.json();
-    logMessage("Health check:\n" + JSON.stringify(health, null, 2));
-  } catch (err) {
-    logMessage("Erro: " + err);
-  }
+function checkHealth() {
+    window.open(`/api/v1/books/health`, "_blank"); 
 }
 
 // Abrir documentação FastAPI
