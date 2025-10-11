@@ -11,9 +11,3 @@ app = FastAPI(
 )
 
 app.include_router(router, prefix="/api/v1")
-
-# Monta a pasta 'frontend' como arquivos estáticos
-BASE_DIR = pathlib.Path(__file__).parent 
-STATIC_FILES_DIR = BASE_DIR / "public"
-
-app.mount("/", StaticFiles(directory=STATIC_FILES_DIR, html=True), name="frontend") 
