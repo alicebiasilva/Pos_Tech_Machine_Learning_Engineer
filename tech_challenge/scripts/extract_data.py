@@ -5,11 +5,14 @@ import os
 BASE_URL = "https://books.toscrape.com/"
 
 def fetch_page(url: str) -> str:
+    """Faz uma requisição e retorna o HTML corretamente decodificado."""
     response = requests.get(url)
     response.raise_for_status()
+    response.encoding = 'ISO-8859-1'
+
     return response.text
 
-def download_image(img_url: str, save_folder: str = "tech_challenge/data/images") -> str:
+def download_image(img_url: str, save_folder: str = "public/images") -> str:
     """Baixa a imagem e retorna o caminho salvo localmente."""
     os.makedirs(save_folder, exist_ok=True)
     filename = os.path.join(save_folder, img_url.split("/")[-1])
@@ -55,7 +58,10 @@ def scrape_all_books() -> list[dict]:
     """Percorre todas as categorias e páginas e retorna todos os livros."""
     categories_html = fetch_page(BASE_URL)
     soup = BeautifulSoup(categories_html, "html.parser")
-    categories = {cat.text.strip(): BASE_URL + cat["href"] for cat in soup.select(".side_categories ul li ul li a")}
+    categories = {
+        cat.text.strip(): BASE_URL + cat["href"]
+        for cat in soup.select(".side_categories ul li ul li a")
+    }
 
     all_books = []
     for name, url in categories.items():
