@@ -1,14 +1,14 @@
 {
     "builds": [
       {
-        "src": "api/main.py",
+        "src": "tech_challenge/api/main.py",
         "use": "@vercel/python"
       }
     ],
     "routes": [
       {
         "src": "/(.*)",
-        "dest": "api/main.py"
+        "dest": "tech_challenge/api/main.py"
       }
     ]
   }
