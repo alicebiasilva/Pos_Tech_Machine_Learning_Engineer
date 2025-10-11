@@ -1,6 +1,5 @@
 from fastapi import APIRouter, HTTPException, Query
 import pandas as pd
-from flasgger import Swagger
 
 router = APIRouter()
 
