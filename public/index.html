@@ -43,61 +43,61 @@
 <div id="log"></div>
 
 <script>
-const apiBase = "https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books";
-let livros = [];
+  const apiBase = "https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books";
+  let livros = [];
 
-// Busca todos os livros da API e preenche a tabela
-async function fetchAllBooksTable() {
-  try {
-    const response = await fetch(apiBase);
-    if (!response.ok) throw new Error('Erro ao buscar dados');
-
-    livros = await response.json(); // Atualiza a variável global
-    renderTable(livros);            // Renderiza a tabela
-  } catch (error) {
-    console.error('Erro:', error);
+  // Função para buscar todos os livros da API
+  async function fetchAllBooksTable() {
+    try {
+      const response = await fetch(apiBase);
+      if (!response.ok) throw new Error('Erro ao buscar dados');
+      livros = await response.json();
+      renderTable(livros);
+    } catch (error) {
+      console.error('Erro:', error);
+    }
   }
-}
 
-// Renderiza os dados na tabela
-function renderTable(data) {
-  const tbody = document.querySelector('#livros-table tbody');
-  tbody.innerHTML = ''; // Limpa tabela antes de adicionar os dados
+  // Função para renderizar os dados na tabela
+  function renderTable(data) {
+    const tbody = document.querySelector('#livros-table tbody');
+    tbody.innerHTML = '';
+    data.forEach(livro => {
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${livro.id || ''}</td>
+        <td>${livro.title || ''}</td>
+        <td>${livro.author || ''}</td>
+        <td>${livro.year || ''}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
 
-  data.forEach(livro => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${livro.id || ""}</td>
-      <td>${livro.title || ""}</td>
-      <td>${livro.author || ""}</td>
-      <td>${livro.year || ""}</td>
-    `;
-    tbody.appendChild(row);
-  });
-}
+  // Função para aplicar os filtros
+  function applyFilters() {
+    const filterId = document.getElementById("filter-id").value.toLowerCase();
+    const filterTitle = document.getElementById("filter-title").value.toLowerCase();
+    const filterAuthor = document.getElementById("filter-author").value.toLowerCase();
+    const filterYear = document.getElementById("filter-year").value.toLowerCase();
 
-// Aplica filtros em tempo real
-function applyFilters() {
-  const filterId = document.getElementById("filter-id").value.toLowerCase();
-  const filterTitle = document.getElementById("filter-title").value.toLowerCase();
-  const filterAuthor = document.getElementById("filter-author").value.toLowerCase();
-  const filterYear = document.getElementById("filter-year").value.toLowerCase();
+    const filtered = livros.filter(l =>
+      (l.id?.toString() || "").includes(filterId) &&
+      (l.title?.toLowerCase() || "").includes(filterTitle) &&
+      (l.author?.toLowerCase() || "").includes(filterAuthor) &&
+      (l.year?.toString() || "").includes(filterYear)
+    );
+    renderTable(filtered);
+  }
 
-  const filtered = livros.filter(l =>
-    (l.id?.toString() || "").includes(filterId) &&
-    (l.title?.toLowerCase() || "").includes(filterTitle) &&
-    (l.author?.toLowerCase() || "").includes(filterAuthor) &&
-    (l.year?.toString() || "").includes(filterYear)
-  );
+  // Event listeners para os filtros
+  document.getElementById("filter-id").addEventListener("input", applyFilters);
+  document.getElementById("filter-title").addEventListener("input", applyFilters);
+  document.getElementById("filter-author").addEventListener("input", applyFilters);
+  document.getElementById("filter-year").addEventListener("input", applyFilters);
 
-  renderTable(filtered);
-}
-
-// Event listeners para filtros
-["filter-id", "filter-title", "filter-author", "filter-year"].forEach(id => {
-  document.getElementById(id).addEventListener("input", applyFilters);
-});
-
+  // Chama a função para carregar os dados ao iniciar
+  window.onload = fetchAllBooksTable;
 
 // Função para log
 function logMessage(msg) {
