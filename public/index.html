@@ -43,7 +43,7 @@
 <div id="log"></div>
 
 <script>
-const apiBase = "https://pos-tech-machine-learning-engineer-6td7lp2ru.vercel.app/api/v1/books";
+const apiBase = "https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books";
 let livros = [];
 
 // Renderiza tabela
@@ -91,23 +91,23 @@ function logMessage(msg) {
 
 // Funções para as rotas
 function fetchAllBooks() {
-  window.open(`/api/v1/books/{book_id}`, "_blank");
+  window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books`, "_blank");
 }
 
 function fetchBookById() {
-    window.open(`/api/v1/books`, "_blank");
+    window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books/{book_id}`, "_blank");
 }
 
 function searchBooks() {
-    window.open(`/api/v1/books/search`, "_blank"); 
+    window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/books/search`, "_blank"); 
 }
 
 function fetchCategories() {
-    window.open(`/api/v1/books/categories`, "_blank"); 
+    window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/categories`, "_blank"); 
 }
 
 function checkHealth() {
-    window.open(`/api/v1/books/health`, "_blank"); 
+    window.open(`https://pos-tech-machine-learning-engineer.vercel.app/api/v1/health`, "_blank"); 
 }
 
 // Abrir documentação FastAPI
